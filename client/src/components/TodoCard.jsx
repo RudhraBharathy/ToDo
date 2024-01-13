@@ -11,12 +11,6 @@ import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TodoOperation from "./TodoOperation";
 
-const icons = [
-  <WorkRoundedIcon key="work" className="m-3" />,
-  <MenuBookRoundedIcon key="menu" className="m-3" />,
-  <NightlifeRoundedIcon key="nightlife" className="m-3" />,
-  <PeopleRoundedIcon key="people" className="m-3" />,
-];
 
 const cardStyle = {
   minWidth: 300,
@@ -33,6 +27,10 @@ const contentStyle = {
 
 const TodoCard = ({todo}) => {
   const [isChecked, setIsChecked] = useState(false);
+  
+  const handleCheck = () => {
+    setIsChecked(!isChecked);
+  }
 
   return (
     <Card className="px-6" sx={cardStyle}>
@@ -59,13 +57,12 @@ const TodoCard = ({todo}) => {
         </Typography>
       </Box>
       <CardContent sx={contentStyle}>
-        <Box sx={{ color: "#1976d2" }}>{icons}</Box>
         <Box className="m-0 p-0 mr-5 flex flex-row justify-end items-center">
           <Checkbox
             size="small"
             checked={isChecked}
             onChange={(e) => {
-              setIsChecked(e.target.checked);
+              handleCheck();
             }}
           />
           <Typography
