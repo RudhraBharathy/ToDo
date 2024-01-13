@@ -4,10 +4,14 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import TodoEditCard from "./TodoEditCard";
+import { useDispatch } from "react-redux";
+import { removeTodo } from "../features/todoSlice";
 
-export default function TodoOperation() {
+export default function TodoOperation({ todo }) {
   const [anchor, setAnchor] = React.useState(null);
   const [showEditCard, setShowEditCard] = React.useState(false);
+
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     setAnchor(anchor ? null : event.currentTarget);
@@ -20,6 +24,11 @@ export default function TodoOperation() {
 
   const handleEditClose = () => {
     setShowEditCard(false);
+  };
+
+  const handleDeleteClick = () => {
+    dispatch(removeTodo(todo.id));
+    setAnchor(null);
   };
 
   const open = Boolean(anchor);
@@ -47,13 +56,18 @@ export default function TodoOperation() {
             <BorderColorRoundedIcon className="mr-3" />
             Edit...
           </div>
-          <div className="w-full text-left hover:bg-gray-200 hover:text-gray-800 rounded-lg p-2">
+          <div
+            className="w-full text-left hover:bg-gray-200 hover:text-gray-800 rounded-lg p-2"
+            onClick={handleDeleteClick}
+          >
             <DeleteRoundedIcon className="mr-3" />
             Delete
           </div>
         </div>
       </BasePopup>
-      {showEditCard && <TodoEditCard handleClose={handleEditClose} />}
+      {showEditCard && (
+        <TodoEditCard todoToEdit={todo} handleClose={handleEditClose} />
+      )}
     </div>
   );
 }

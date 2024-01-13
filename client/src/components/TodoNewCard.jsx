@@ -13,7 +13,7 @@ import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
-import { editTodo } from "../features/todoSlice";
+import { addTodo } from "../features/todoSlice";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -31,15 +31,15 @@ const icons = [
   <PeopleRoundedIcon key="people" className="m-3 cursor-pointer" />,
 ];
 
-export default function TodoEditCard({ todoToEdit, handleClose }) {
+export default function TodoEditCard({ handleClose }) {
   const [todoText, setTodoText] = useState({
-    title: todoToEdit.title,
-    description: todoToEdit.description,
+    title: "",
+    description: "",
   });
 
   const updateJsonText = (fieldName, newTodoText) => {
-    setTodoText((prevTodoText) => ({
-      ...prevTodoText,
+    setTodoText((prevtodoText) => ({
+      ...prevtodoText,
       [fieldName]: newTodoText,
     }));
   };
@@ -50,15 +50,9 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
 
   const dispatch = useDispatch();
 
-  const editTodoHandle = (event) => {
+  const addTodoHandle = (event) => {
     event.preventDefault();
-    dispatch(
-      editTodo({
-        id: todoToEdit.id,
-        title: todoText.title,
-        description: todoText.description,
-      })
-    );
+    dispatch(addTodo(todoText));
     setTodoText({
       title: "",
       description: "",
@@ -75,11 +69,17 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
       >
         <Box className="px-3 flex flex-row justify-between items-center">
           <DialogActions>
-            <Button autoFocus onClick={editTodoHandle}>
-              Update
+            <Button autoFocus onClick={addTodoHandle}>
+              Add
             </Button>
           </DialogActions>
-          <IconButton aria-label="close" onClick={handleClose}>
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{
+              color: "#1976d2",
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
@@ -98,7 +98,6 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
                 label="Title"
                 multiline
                 maxRows={4}
-                defaultValue={todoToEdit.title}
                 onChange={(e) => handleInputChange("title", e)}
               />
               <br />
@@ -107,7 +106,6 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
                 label="Description"
                 multiline
                 rows={4}
-                defaultValue={todoToEdit.description}
                 onChange={(e) => handleInputChange("description", e)}
               />
             </div>

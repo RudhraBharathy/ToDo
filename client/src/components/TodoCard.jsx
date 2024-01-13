@@ -47,7 +47,7 @@ const TodoCard = ({todo}) => {
           >{todo.title}
           </Typography>
           <Button size="small">
-            <TodoOperation />
+            <TodoOperation todo={todo} />
           </Button>
         </CardContent>
         <Typography

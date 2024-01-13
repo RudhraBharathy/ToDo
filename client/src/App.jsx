@@ -23,7 +23,7 @@ import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import Checkbox from "@mui/material/Checkbox";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { TodoMainBox } from "./components/TodoMainBox";
-import TodoEditCard from "./components/TodoEditCard";
+import TodoNewCard from "./components/TodoNewCard";
 
 const drawerWidth = 250;
 
@@ -143,7 +143,7 @@ export default function App() {
           >
             <AddRoundedIcon />
           </IconButton>
-          {editCardOpen && <TodoEditCard handleClose={handleEditCardClose} />}
+          {editCardOpen && <TodoNewCard handleClose={handleEditCardClose} />}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -158,7 +158,7 @@ export default function App() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Work", "Study", "Entertainment", "Family", "Completed Todos"].map(
+          {["Work", "Study", "Entertainment", "Family", "Completed"].map(
             (text, index) => (
               <ListItem key={text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
