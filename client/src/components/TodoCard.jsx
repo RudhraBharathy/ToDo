@@ -11,7 +11,6 @@ import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TodoOperation from "./TodoOperation";
 
-
 const cardStyle = {
   minWidth: 300,
   border: "1px #1976d2 solid",
@@ -25,12 +24,12 @@ const contentStyle = {
   justifyContent: "space-between",
 };
 
-const TodoCard = ({todo}) => {
+const TodoCard = ({ todo }) => {
   const [isChecked, setIsChecked] = useState(false);
-  
+
   const handleCheck = () => {
     setIsChecked(!isChecked);
-  }
+  };
 
   return (
     <Card className="px-6" sx={cardStyle}>
@@ -42,7 +41,8 @@ const TodoCard = ({todo}) => {
               textDecoration: isChecked ? "line-through" : "none",
             }}
             color="black"
-          >{todo.title}
+          >
+            {todo.title}
           </Typography>
           <Button size="small">
             <TodoOperation todo={todo} />
@@ -53,7 +53,9 @@ const TodoCard = ({todo}) => {
             fontSize: 15,
             textDecoration: isChecked ? "line-through" : "none",
           }}
-        > {todo.description}
+        >
+          {" "}
+          {todo.description}
         </Typography>
       </Box>
       <CardContent sx={contentStyle}>

@@ -7,13 +7,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
+import { nanoid } from "@reduxjs/toolkit";
 import { addTodo } from "../features/todoSlice";
+import TodoAlert from "./TodoAlert";
+import axios from "axios";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -24,46 +23,66 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const icons = [
-  <WorkRoundedIcon key="work" className="m-3 cursor-pointer" />,
-  <MenuBookRoundedIcon key="menu" className="m-3 cursor-pointer" />,
-  <NightlifeRoundedIcon key="nightlife" className="m-3 cursor-pointer" />,
-  <PeopleRoundedIcon key="people" className="m-3 cursor-pointer" />,
-];
-
-export default function TodoEditCard({ handleClose }) {
+export default function TodoNewCard({ handleClose }) {
   const [todoText, setTodoText] = useState({
     title: "",
     description: "",
   });
 
-  const updateJsonText = (fieldName, newTodoText) => {
-    setTodoText((prevtodoText) => ({
-      ...prevtodoText,
-      [fieldName]: newTodoText,
-    }));
-  };
+  const [alert, setAlert] = useState({
+    message: "",
+    type: "",
+    show: false,
+  });
 
   const handleInputChange = (fieldName, { target: { value } }) => {
-    updateJsonText(fieldName, value);
+    setTodoText((prevTodoText) => ({
+      ...prevTodoText,
+      [fieldName]: value,
+    }));
   };
 
   const dispatch = useDispatch();
 
-  const addTodoHandle = (event) => {
-    event.preventDefault();
-    dispatch(addTodo(todoText));
+  const addDataInDB = async () => {
+    const todoWithId = {
+      id: nanoid(),
+      title: todoText.title,
+      description: todoText.description,
+    };
+    const url = `http://localhost:3001/addtodo`;
+    console.log(todoWithId.id);
+    try {
+      await axios.post(url, todoWithId);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+  const addTodoHandle = () => {
+    if (!todoText.title || !todoText.description) {
+      setAlert({
+        message: "Please fill all the fields",
+        type: "error",
+        show: true,
+      });
+      return;
+    }
+
+    addDataInDB();
+
+    dispatch(addTodo({ ...todoText, id: nanoid() }));
     setTodoText({
       title: "",
       description: "",
     });
-    handleClose();
+    handleClose(1);
   };
 
   return (
     <React.Fragment>
       <BootstrapDialog
-        onClose={handleClose}
+        onClose={() => handleClose(0)}
         aria-labelledby="customized-dialog-title"
         open={true}
       >
@@ -75,7 +94,7 @@ export default function TodoEditCard({ handleClose }) {
           </DialogActions>
           <IconButton
             aria-label="close"
-            onClick={handleClose}
+            onClick={() => handleClose(0)}
             sx={{
               color: "#1976d2",
             }}
@@ -98,6 +117,7 @@ export default function TodoEditCard({ handleClose }) {
                 label="Title"
                 multiline
                 maxRows={4}
+                value={todoText.title}
                 onChange={(e) => handleInputChange("title", e)}
               />
               <br />
@@ -106,13 +126,20 @@ export default function TodoEditCard({ handleClose }) {
                 label="Description"
                 multiline
                 rows={4}
+                value={todoText.description}
                 onChange={(e) => handleInputChange("description", e)}
               />
             </div>
           </Box>
-          <Box sx={{ color: "#1976d2" }}>{icons}</Box>
         </DialogContent>
       </BootstrapDialog>
+      {alert.show && (
+        <TodoAlert
+          message={alert.message}
+          alert={alert.type}
+          setShowAlert={() => setAlert((prev) => ({ ...prev, show: false }))}
+        />
+      )}
     </React.Fragment>
   );
 }

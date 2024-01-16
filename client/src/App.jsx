@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -11,6 +11,7 @@ import { TodoMainBox } from "./components/TodoMainBox";
 import TodoNewCard from "./components/TodoNewCard";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import TodoAlert from "./components/TodoAlert";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -53,16 +54,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
-  const [editCardOpen, setEditCardOpen] = React.useState(false);
+export default function App() {
+  const [CardOpen, setCardOpen] = useState(false);
+  const [alert, setAlert] = useState({
+    message: "",
+    type: "",
+    show: false,
+  });
 
-  const handleEditCardOpen = () => {
-    setEditCardOpen(true);
+  const handleCardOpen = () => {
+    setCardOpen(true);
   };
 
-  const handleEditCardClose = () => {
-    setEditCardOpen(false);
+  const handleCardClose = (val) => {
+    setCardOpen(false);
+    if (val) {
+      setAlert({
+        message: "Todo added successfully",
+        type: "success",
+        show: true,
+      });
+    }
   };
+
   return (
     <React.Fragment>
       <Box sx={{ flexGrow: 1 }}>
@@ -72,7 +86,7 @@ export default function SearchAppBar() {
               variant="h6"
               noWrap
               component="div"
-              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+              sx={{ flexGrow: 1, display: { sm: "block" }, width: "100%" }}
             >
               ToDo
             </Typography>
@@ -101,9 +115,16 @@ export default function SearchAppBar() {
           },
         }}
       >
-        <AddIcon sx={{ color: "#1976d2" }} onClick={handleEditCardOpen} />
+        <AddIcon sx={{ color: "#1976d2" }} onClick={handleCardOpen} />
       </Fab>
-      {editCardOpen && <TodoNewCard handleClose={handleEditCardClose} />}
+      {CardOpen && <TodoNewCard handleClose={handleCardClose} />}
+      {alert.show && (
+        <TodoAlert
+          message={alert.message}
+          alert={alert.type}
+          setShowAlert={() => setAlert((prev) => ({ ...prev, show: false }))}
+        />
+      )}
     </React.Fragment>
   );
 }

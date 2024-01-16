@@ -7,13 +7,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
 import { editTodo } from "../features/todoSlice";
+import TodoAlert from "./TodoAlert";
+import axios from "axios";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -24,17 +22,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const icons = [
-  <WorkRoundedIcon key="work" className="m-3 cursor-pointer" />,
-  <MenuBookRoundedIcon key="menu" className="m-3 cursor-pointer" />,
-  <NightlifeRoundedIcon key="nightlife" className="m-3 cursor-pointer" />,
-  <PeopleRoundedIcon key="people" className="m-3 cursor-pointer" />,
-];
-
 export default function TodoEditCard({ todoToEdit, handleClose }) {
   const [todoText, setTodoText] = useState({
     title: todoToEdit.title,
     description: todoToEdit.description,
+  });
+
+  const [alert, setAlert] = useState({
+    message: "",
+    type: "",
+    show: false,
   });
 
   const updateJsonText = (fieldName, newTodoText) => {
@@ -48,10 +45,34 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
     updateJsonText(fieldName, value);
   };
 
+  const editDataInDB = async () => {
+    const url = "http://localhost:3001/edittodo";
+    const todoWithId = {
+      id: todoToEdit.id,
+      title: todoText.title,
+      description: todoText.description,
+    };
+
+    try {
+      await axios.put(url, todoWithId);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
   const dispatch = useDispatch();
 
-  const editTodoHandle = (event) => {
-    event.preventDefault();
+  const editTodoHandle = () => {
+    if (!todoText.title || !todoText.description) {
+      setAlert({
+        message: "Please Fill all the fields",
+        type: "error",
+        show: true,
+      });
+      return;
+    }
+    editDataInDB();
+
     dispatch(
       editTodo({
         id: todoToEdit.id,
@@ -59,11 +80,13 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
         description: todoText.description,
       })
     );
+
     setTodoText({
       title: "",
       description: "",
     });
-    handleClose();
+
+    handleClose(1);
   };
 
   return (
@@ -112,9 +135,15 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
               />
             </div>
           </Box>
-          <Box sx={{ color: "#1976d2" }}>{icons}</Box>
         </DialogContent>
       </BootstrapDialog>
+      {alert.show && (
+        <TodoAlert
+          message={alert.message}
+          alert={alert.type}
+          setShowAlert={() => setAlert((prev) => ({ ...prev, show: false }))}
+        />
+      )}
     </React.Fragment>
   );
 }
