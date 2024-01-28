@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
 import { TodoMainBox } from "./components/TodoMainBox";
 import TodoNewCard from "./components/TodoNewCard";
@@ -90,15 +89,6 @@ export default function App() {
             >
               ToDo
             </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
           </Toolbar>
         </AppBar>
       </Box>

@@ -1,44 +1,29 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const routes = require("./src/routes/routes");
+const errorHandler = require("./src/middlewares/errorHandler");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Server Listening on port: ${port}`));
+const port = 3001;
 
-const url = "mongodb://localhost:27017/ToDo";
-
-mongoose.connect(url, {
+mongoose.connect("mongodb://localhost:27017/ToDo", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}).then(() => {
+  console.log("MongoDB Connected");
+}).catch((err) => {
+  console.error("MongoDB Connection Error:", err);
+  process.exit(1);
 });
 
-const todoSchema = new mongoose.Schema({
-  id: String,
-  title: String,
-  description: String,
+app.use(routes);
+app.use(errorHandler);
+
+app.listen(port, () => {
+  console.log(`Server Listening on port: ${port}`);
 });
-
-const Todo = mongoose.model("todos", todoSchema);
-
-app.post("/addtodo", async (req, res) => {
-  try {
-    const { title, description, id } = req.body;
-
-    const newTodo = new Todo({
-      id,
-      title,
-      description,
-    });
-
-    await newTodo.save();
-    res.send("Todo Added");
-  } catch (error) {
-    console.error("Error saving data:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-});
-

@@ -5,10 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
-import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import NightlifeRoundedIcon from "@mui/icons-material/NightlifeRounded";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import TodoOperation from "./TodoOperation";
 
 const cardStyle = {

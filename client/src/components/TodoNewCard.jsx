@@ -43,15 +43,13 @@ export default function TodoNewCard({ handleClose }) {
   };
 
   const dispatch = useDispatch();
-
+  const todoWithId = {
+    id: nanoid(),
+    title: todoText.title,
+    description: todoText.description,
+  };
   const addDataInDB = async () => {
-    const todoWithId = {
-      id: nanoid(),
-      title: todoText.title,
-      description: todoText.description,
-    };
     const url = `http://localhost:3001/addtodo`;
-    console.log(todoWithId.id);
     try {
       await axios.post(url, todoWithId);
     } catch (err) {
@@ -71,7 +69,7 @@ export default function TodoNewCard({ handleClose }) {
 
     addDataInDB();
 
-    dispatch(addTodo({ ...todoText, id: nanoid() }));
+    dispatch(addTodo(todoWithId));
     setTodoText({
       title: "",
       description: "",

@@ -7,6 +7,7 @@ import TodoEditCard from "./TodoEditCard";
 import { useDispatch } from "react-redux";
 import { removeTodo } from "../features/todoSlice";
 import TodoAlert from "./TodoAlert";
+import axios from "axios";
 
 export default function TodoOperation({ todo }) {
   const [anchor, setAnchor] = useState(null);
@@ -39,6 +40,16 @@ export default function TodoOperation({ todo }) {
     }
   };
 
+  const deletedtodoDB = () => {
+    const url = `http://localhost:3001/deletetodo`;
+    try {
+      const todoid = todo.id;
+      axios.post(url, { id: todoid });
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
   const handleDeleteClick = () => {
     setAnchor(null);
     setAlert({
@@ -46,6 +57,9 @@ export default function TodoOperation({ todo }) {
       type: "error",
       show: true,
     });
+
+    deletedtodoDB();
+
     dispatch(removeTodo(todo.id));
   };
 

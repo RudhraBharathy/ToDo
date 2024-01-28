@@ -13,6 +13,7 @@ import { editTodo } from "../features/todoSlice";
 import TodoAlert from "./TodoAlert";
 import axios from "axios";
 
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -46,13 +47,12 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
   };
 
   const editDataInDB = async () => {
-    const url = "http://localhost:3001/edittodo";
+    const url = `http://localhost:3001/edittodo`;
     const todoWithId = {
       id: todoToEdit.id,
       title: todoText.title,
       description: todoText.description,
     };
-
     try {
       await axios.put(url, todoWithId);
     } catch (err) {
@@ -71,6 +71,7 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
       });
       return;
     }
+
     editDataInDB();
 
     dispatch(
@@ -92,7 +93,7 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
   return (
     <React.Fragment>
       <BootstrapDialog
-        onClose={handleClose}
+        onClose={() => handleClose(0)}
         aria-labelledby="customized-dialog-title"
         open={true}
       >
@@ -102,7 +103,7 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
               Update
             </Button>
           </DialogActions>
-          <IconButton aria-label="close" onClick={handleClose}>
+          <IconButton onClick={() => handleClose(0)}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -121,7 +122,7 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
                 label="Title"
                 multiline
                 maxRows={4}
-                defaultValue={todoToEdit.title}
+                value={todoText.title}
                 onChange={(e) => handleInputChange("title", e)}
               />
               <br />
@@ -130,7 +131,7 @@ export default function TodoEditCard({ todoToEdit, handleClose }) {
                 label="Description"
                 multiline
                 rows={4}
-                defaultValue={todoToEdit.description}
+                value={todoText.description}
                 onChange={(e) => handleInputChange("description", e)}
               />
             </div>
